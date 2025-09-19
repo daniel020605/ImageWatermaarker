@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 def get_exif_date(image_path):
-    """Extract date from EXIF data"""
+    """Extract date from EXIF data or use file modification time as fallback"""
     try:
         with open(image_path, 'rb') as f:
             tags = exifread.process_file(f)
@@ -27,10 +27,17 @@ def get_exif_date(image_path):
                     date_part = date_str.split()[0]  # Get YYYY:MM:DD part
                     return date_part.replace(':', '-')
 
-        return None
+        # Fallback to file modification time
+        import datetime
+        mtime = os.path.getmtime(image_path)
+        date_obj = datetime.datetime.fromtimestamp(mtime)
+        return date_obj.strftime('%Y-%m-%d')
+
     except Exception as e:
         print(f"Error reading EXIF from {image_path}: {e}")
-        return None
+        # Fallback to current date
+        import datetime
+        return datetime.datetime.now().strftime('%Y-%m-%d')
 
 
 def add_watermark(input_path, output_path, font_size=24, color='white', position='bottom-right'):
