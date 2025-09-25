@@ -1,81 +1,198 @@
-# Image Watermark Tool
+# ImageWatermarker - 图片水印工具
 
-A command-line tool for adding timestamp watermarks to images based on EXIF metadata or file modification time.
+一个简单易用的图片水印本地应用程序，支持Windows和MacOS系统。
 
-## Features
+## 功能特点
 
-- 📅 **EXIF Date Extraction**: Automatically extracts shooting dates from image EXIF metadata
-- 🎨 **Customizable Watermarks**: Adjust font size, text color, and position
-- 📍 **Multiple Positions**: Support for top-left, top-right, bottom-left, bottom-right, and center positions
-- 🔄 **Fallback Handling**: Uses file modification time when EXIF data is unavailable
-- 📁 **Batch Processing**: Processes all images in a directory automatically
-- 🗂️ **Smart Output**: Creates organized output directory structure
+### 📁 文件处理
+- **多种导入方式**: 支持单张图片拖拽、文件选择器导入、批量导入和文件夹导入
+- **格式支持**: 
+  - 输入格式: JPEG, PNG, BMP, TIFF (PNG完全支持透明通道)
+  - 输出格式: JPEG, PNG (用户可选)
+- **智能导出**: 防止覆盖原文件，支持自定义命名规则
 
-## Installation
+### 🎨 水印功能
+- **文本水印**: 自定义文本内容、字体大小、颜色和透明度
+- **位置控制**: 九宫格预设位置 + 手动拖拽定位
+- **样式设置**: 支持旋转角度调节
+- **实时预览**: 所有调整实时显示效果
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd ImageWatermarker
+### ⚙️ 配置管理
+- **模板系统**: 保存、加载、管理水印模板
+- **设置持久化**: 自动保存用户偏好设置
+- **批量处理**: 一键应用水印到多张图片
+
+## 安装和运行
+
+### 环境要求
+- Python 3.8 或更高版本
+- tkinter (通常随Python安装)
+- Pillow 图像处理库
+
+### 安装步骤
+
+1. **克隆或下载项目**
+   ```bash
+   git clone <repository-url>
+   cd ImageWatermarker
+   ```
+
+2. **安装依赖**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **运行程序**
+   ```bash
+   python main.py
+   ```
+
+### 依赖包说明
+- `Pillow>=9.0.0`: 图像处理核心库
+- `tkinter-dnd2>=0.3.0`: 拖拽功能支持 (可选)
+
+## 使用指南
+
+### 基本操作流程
+
+1. **导入图片**
+   - 点击"导入图片"按钮选择单张或多张图片
+   - 或点击"导入文件夹"选择整个文件夹
+   - 图片将显示在左侧列表中
+
+2. **设置水印**
+   - 在"水印设置"标签页中配置文本内容
+   - 调整字体大小、颜色和透明度
+   - 选择水印位置（九宫格布局）
+   - 实时预览效果
+
+3. **配置导出**
+   - 在"导出设置"标签页中选择输出目录
+   - 选择文件格式（JPEG/PNG）
+   - 设置文件命名规则
+
+4. **导出图片**
+   - 点击"导出图片"按钮开始批量处理
+   - 程序会显示进度并在完成后提示
+
+### 高级功能
+
+#### 模板管理
+- **保存模板**: 将当前设置保存为模板，方便重复使用
+- **加载模板**: 快速应用已保存的水印设置
+- **导入/导出**: 与他人分享水印模板
+
+#### 快捷键
+- `Ctrl+O`: 导入图片
+- `Ctrl+S`: 导出图片
+- `Ctrl+Q`: 退出程序
+
+## 项目结构
+
+```
+ImageWatermarker/
+├── main.py                 # 主程序入口
+├── requirements.txt        # 依赖列表
+├── 需求文档.md             # 详细需求文档
+├── gui/                    # 用户界面模块
+│   ├── __init__.py
+│   └── main_window_complete.py  # 主窗口实现
+├── core/                   # 核心功能模块
+│   ├── __init__.py
+│   ├── image_processor.py  # 图像处理
+│   ├── watermark.py        # 水印处理
+│   └── config_manager.py   # 配置管理
+├── utils/                  # 工具模块
+│   ├── __init__.py
+│   ├── file_utils.py       # 文件工具
+│   └── image_utils.py      # 图像工具
+├── templates/              # 水印模板存储
+└── test_images/           # 测试图片
 ```
 
-2. Install dependencies:
-```bash
-pip3 install -r requirements.txt
-```
+## 技术实现
 
-## Usage
+### 核心技术栈
+- **GUI框架**: Tkinter + ttk
+- **图像处理**: Pillow (PIL)
+- **配置管理**: JSON
+- **多线程**: 后台导出处理
 
-```bash
-python3 watermark.py [input_directory] [options]
-```
+### 主要模块
 
-### Options
+#### ImageProcessor (图像处理器)
+- 支持多种图片格式的加载和保存
+- 智能格式转换和尺寸调整
+- 缩略图生成和预览优化
 
-- `--font-size`: Font size for watermark text (default: 24)
-- `--color`: Text color (default: white)
-- `--position`: Watermark position - choices: `top-left`, `top-right`, `bottom-left`, `bottom-right`, `center` (default: bottom-right)
+#### WatermarkProcessor (水印处理器)
+- 文本水印生成和渲染
+- 位置计算和布局管理
+- 透明度和旋转效果处理
 
-### Examples
+#### ConfigManager (配置管理器)
+- 模板的保存、加载和管理
+- 用户设置的持久化存储
+- 默认配置和设置迁移
 
-1. Basic usage with default settings:
-```bash
-python3 watermark.py ./photos
-```
+## 开发计划
 
-2. Custom font size and color:
-```bash
-python3 watermark.py ./photos --font-size 30 --color black
-```
+### 已完成功能 ✅
+- [x] 基础图片导入和列表显示
+- [x] 文本水印功能
+- [x] 九宫格位置设置
+- [x] 实时预览
+- [x] 批量导出
+- [x] 模板保存和加载
+- [x] 配置管理
 
-3. Top-left positioning:
-```bash
-python3 watermark.py ./photos --position top-left
-```
+### 计划中功能 🚧
+- [ ] 图片水印支持
+- [ ] 拖拽定位功能
+- [ ] 字体选择器
+- [ ] 阴影和描边效果
+- [ ] 图片尺寸调整
+- [ ] 更多导出格式
 
-4. All custom options:
-```bash
-python3 watermark.py ./photos --font-size 36 --color yellow --position center
-```
+### 未来增强 🔮
+- [ ] 批量水印模板
+- [ ] 命令行接口
+- [ ] 插件系统
+- [ ] 云端模板同步
 
-## Output
+## 故障排除
 
-Processed images are saved in a new subdirectory named `[original_directory]_watermark` with the same filenames.
+### 常见问题
 
-## Supported Image Formats
+1. **程序无法启动**
+   - 检查Python版本是否为3.8+
+   - 确认已安装所有依赖包
+   - 检查tkinter是否可用
 
-- JPEG/JPG
-- PNG
-- TIFF
-- BMP
-- WebP
+2. **图片加载失败**
+   - 确认图片格式是否支持
+   - 检查文件是否损坏
+   - 验证文件路径是否正确
 
-## Dependencies
+3. **导出失败**
+   - 检查输出目录权限
+   - 确认磁盘空间充足
+   - 验证文件名是否合法
 
-- Python 3.6+
-- Pillow >= 10.0.0
-- exifread >= 3.0.0
+### 获取帮助
+如果遇到问题，请检查：
+1. 控制台错误输出
+2. 程序日志文件
+3. 系统兼容性
 
-## License
+## 许可证
 
-MIT License
+本项目采用 MIT 许可证。详见 LICENSE 文件。
+
+## 贡献
+
+欢迎提交问题报告和功能请求！
+
+---
+
+**ImageWatermarker** - 让图片水印变得简单高效！
