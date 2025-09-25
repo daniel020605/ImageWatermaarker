@@ -26,6 +26,35 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
+def check_tkinter():
+    """检查tkinter是否可用"""
+    try:
+        import tkinter as tk
+        from tkinter import messagebox
+        return True, None
+    except ImportError as e:
+        return False, str(e)
+
+# 检查tkinter
+tkinter_available, error_msg = check_tkinter()
+if not tkinter_available:
+    print("❌ 错误: 无法导入tkinter模块")
+    print(f"详细错误: {error_msg}")
+    print("")
+    print("🔧 解决方案:")
+    print("1. 使用系统自带的Python3:")
+    print("   python3 main.py")
+    print("")
+    print("2. 安装支持tkinter的Python:")
+    print("   brew install python-tk")
+    print("")
+    print("3. 从官网下载完整的Python安装包:")
+    print("   https://www.python.org/downloads/")
+    print("")
+    input("按回车键退出...")
+    sys.exit(1)
+
+# 导入tkinter
 try:
     import tkinter as tk
     from tkinter import messagebox

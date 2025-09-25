@@ -510,8 +510,10 @@ class MainWindow:
                                                image_info['format'] or 'Unknown'
                                            ))
             
-            # 保存缩略图引用，防止被垃圾回收
-            self.image_tree.set(item_id, '#0', thumbnail_photo)
+            # 保存缩略图引用到字典中，防止被垃圾回收
+            if not hasattr(self, 'thumbnail_refs'):
+                self.thumbnail_refs = {}
+            self.thumbnail_refs[item_id] = thumbnail_photo
     
     def clear_images(self):
         """清空图片列表"""
