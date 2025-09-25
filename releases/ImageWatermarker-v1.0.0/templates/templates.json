@@ -1,0 +1,95 @@
+{
+  "templates": {
+    "Default": {
+      "name": "Default",
+      "description": "默认水印模板",
+      "created_time": "2025-09-25T11:18:18.616867",
+      "watermark_config": {
+        "type": "text",
+        "text": "Sample Watermark",
+        "font_name": null,
+        "font_size": 36,
+        "color": [
+          255,
+          255,
+          255,
+          128
+        ],
+        "bold": false,
+        "italic": false,
+        "shadow": false,
+        "stroke": false,
+        "stroke_width": 2,
+        "stroke_color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "position": "middle_center",
+        "custom_pos": null,
+        "margin": 20,
+        "rotation": 0,
+        "opacity": 128,
+        "scale_percent": 100.0,
+        "image_path": null
+      },
+      "export_config": {
+        "output_format": "JPEG",
+        "quality": 95,
+        "naming_rule": "suffix",
+        "custom_text": "_watermarked",
+        "resize_enabled": false,
+        "resize_width": null,
+        "resize_height": null,
+        "resize_scale": null
+      }
+    },
+    "测试模板": {
+      "name": "测试模板",
+      "description": "自动测试生成",
+      "created_time": "2025-09-25T11:18:18.680069",
+      "watermark_config": {
+        "type": "text",
+        "text": "Sample Watermark",
+        "font_name": null,
+        "font_size": 36,
+        "color": [
+          255,
+          255,
+          255,
+          128
+        ],
+        "bold": false,
+        "italic": false,
+        "shadow": false,
+        "stroke": false,
+        "stroke_width": 2,
+        "stroke_color": [
+          0,
+          0,
+          0,
+          255
+        ],
+        "position": "middle_center",
+        "custom_pos": null,
+        "margin": 20,
+        "rotation": 0,
+        "opacity": 128,
+        "scale_percent": 100.0,
+        "image_path": null
+      },
+      "export_config": {
+        "output_format": "JPEG",
+        "quality": 95,
+        "naming_rule": "suffix",
+        "custom_text": "_watermarked",
+        "resize_enabled": false,
+        "resize_width": null,
+        "resize_height": null,
+        "resize_scale": null
+      }
+    }
+  },
+  "last_used": "测试模板"
+}
