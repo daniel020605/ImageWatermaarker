@@ -849,8 +849,9 @@ class MainWindow:
         export_config = template.get('export_config', {})
         
         # 应用水印设置
+        current_date = datetime.now().strftime("%Y-%m-%d")
         self.var_watermark_type.set(watermark_config.get('type', 'text'))
-        self.var_watermark_text.set(watermark_config.get('text', 'Sample Watermark'))
+        self.var_watermark_text.set(watermark_config.get('text', current_date))
         self.var_font_size.set(watermark_config.get('font_size', 36))
         self.var_opacity.set(watermark_config.get('opacity', 50))
         self.var_position.set(watermark_config.get('position', 'middle_center'))
@@ -889,6 +890,10 @@ class MainWindow:
             if last_template:
                 self.var_current_template.set(last_template)
                 self.load_template()
+            else:
+                # 如果没有保存的模板，确保使用当前日期作为默认水印文本
+                current_date = datetime.now().strftime("%Y-%m-%d")
+                self.var_watermark_text.set(current_date)
     
     def on_template_selected(self, event=None):
         """模板选择事件"""

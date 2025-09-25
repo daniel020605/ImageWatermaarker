@@ -22,12 +22,13 @@ class ConfigManager:
         self.settings_file = self.config_dir / "settings.json"
         
         # 默认配置
+        current_date = datetime.now().strftime("%Y-%m-%d")
         self.default_watermark_config = {
             'type': 'text',
-            'text': 'Sample Watermark',
+            'text': current_date,
             'font_name': None,
             'font_size': 36,
-            'color': [255, 255, 255, 128],  # RGBA
+            'color': [0, 0, 0, 128],  # RGBA - 黑色半透明
             'bold': False,
             'italic': False,
             'shadow': False,
