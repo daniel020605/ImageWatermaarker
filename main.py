@@ -73,7 +73,7 @@ except ImportError:
 
 # 导入应用程序主窗口
 try:
-    from gui.main_window_complete import MainWindow
+    from gui.main_window_image_watermark import MainWindow
 except ImportError as e:
     print(f"错误: 无法导入主窗口模块: {e}")
     print("请确保所有模块文件都存在")
