@@ -10,6 +10,7 @@ import threading
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from PIL import Image
+from datetime import datetime
 
 from core.image_processor import ImageProcessor
 from core.watermark import WatermarkProcessor, WatermarkPosition
@@ -58,9 +59,12 @@ class MainWindow:
     
     def setup_variables(self):
         """设置GUI变量"""
+        # 获取当前日期作为默认水印文本
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        
         # 水印设置变量
         self.var_watermark_type = tk.StringVar(value="text")
-        self.var_watermark_text = tk.StringVar(value="Sample Watermark")
+        self.var_watermark_text = tk.StringVar(value=current_date)
         self.var_font_size = tk.IntVar(value=36)
         self.var_opacity = tk.IntVar(value=50)
         self.var_position = tk.StringVar(value="middle_center")
@@ -77,8 +81,8 @@ class MainWindow:
         self.var_output_dir = tk.StringVar()
         self.var_current_template = tk.StringVar(value="Default")
         
-        # 颜色变量
-        self.watermark_color = (255, 255, 255, 128)  # 默认白色半透明
+        # 颜色变量 - 设置默认为黑色，便于预览
+        self.watermark_color = (0, 0, 0, 128)  # 默认黑色半透明
     
     def create_menu(self):
         """创建菜单栏"""
@@ -277,11 +281,25 @@ class MainWindow:
         
         # 字体大小
         ttk.Label(self.text_settings_frame, text="字体大小:").grid(row=1, column=0, sticky=tk.W, pady=2)
-        font_size_scale = ttk.Scale(self.text_settings_frame, from_=12, to=100, 
-                                   variable=self.var_font_size, orient=tk.HORIZONTAL,
-                                   command=self.on_font_size_changed)
-        font_size_scale.grid(row=1, column=1, sticky=tk.EW, pady=2)
-        ttk.Label(self.text_settings_frame, textvariable=self.var_font_size).grid(row=1, column=2, pady=2)
+        
+        # 字体大小输入框和调整按钮
+        font_size_frame = ttk.Frame(self.text_settings_frame)
+        font_size_frame.grid(row=1, column=1, columnspan=2, sticky=tk.EW, pady=2)
+        
+        # 减小按钮
+        ttk.Button(font_size_frame, text="-", width=3, 
+                  command=self.decrease_font_size).pack(side=tk.LEFT, padx=(0, 2))
+        
+        # 字体大小输入框
+        font_size_entry = ttk.Entry(font_size_frame, textvariable=self.var_font_size, 
+                                   width=8, justify=tk.CENTER)
+        font_size_entry.pack(side=tk.LEFT, padx=2)
+        font_size_entry.bind('<Return>', self.on_font_size_entry_changed)
+        font_size_entry.bind('<FocusOut>', self.on_font_size_entry_changed)
+        
+        # 增大按钮
+        ttk.Button(font_size_frame, text="+", width=3, 
+                  command=self.increase_font_size).pack(side=tk.LEFT, padx=(2, 0))
         
         # 颜色选择
         ttk.Label(self.text_settings_frame, text="文字颜色:").grid(row=2, column=0, sticky=tk.W, pady=2)
@@ -626,6 +644,36 @@ class MainWindow:
     
     def on_font_size_changed(self, value):
         """字体大小变化"""
+        self.update_preview()
+    
+    def on_font_size_entry_changed(self, event=None):
+        """字体大小输入框变化"""
+        try:
+            size = int(self.var_font_size.get())
+            if size < 8:
+                size = 8
+                self.var_font_size.set(size)
+            elif size > 200:
+                size = 200
+                self.var_font_size.set(size)
+            self.update_preview()
+        except ValueError:
+            # 如果输入无效，恢复到默认值
+            self.var_font_size.set(36)
+            self.update_preview()
+    
+    def decrease_font_size(self):
+        """减小字体大小"""
+        current_size = self.var_font_size.get()
+        new_size = max(8, current_size - 2)
+        self.var_font_size.set(new_size)
+        self.update_preview()
+    
+    def increase_font_size(self):
+        """增大字体大小"""
+        current_size = self.var_font_size.get()
+        new_size = min(200, current_size + 2)
+        self.var_font_size.set(new_size)
         self.update_preview()
     
     def on_opacity_changed(self, value):
