@@ -586,16 +586,18 @@ class MainWindow:
             loaded_count = 0
             for file_path in file_paths:
                 try:
-                    image = self.image_processor.load_image(file_path)
-                    if image:
-                        image_info = {
-                            'path': file_path,
-                            'name': os.path.basename(file_path),
-                            'image': image,
-                            'size': f"{image.width}x{image.height}",
-                            'format': image.format or 'Unknown'
+                    image_info = self.image_processor.load_image(file_path)
+                    if image_info:
+                        # ImageProcessor.load_image() 返回的是字典，包含图片信息
+                        # 我们需要重新组织数据结构以匹配GUI的期望格式
+                        gui_image_info = {
+                            'path': image_info['path'],
+                            'name': image_info['name'],
+                            'image': image_info['image'],  # 这是PIL图像对象
+                            'size': f"{image_info['image'].width}x{image_info['image'].height}",
+                            'format': image_info['format'] or 'Unknown'
                         }
-                        self.current_images.append(image_info)
+                        self.current_images.append(gui_image_info)
                         loaded_count += 1
                 except Exception as e:
                     print(f"加载图片失败 {file_path}: {e}")
