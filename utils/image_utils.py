@@ -13,7 +13,22 @@ def pil_to_tkinter(pil_image: Image.Image) -> ImageTk.PhotoImage:
     """
     将PIL图像转换为Tkinter可显示的PhotoImage
     """
-    return ImageTk.PhotoImage(pil_image)
+    # 确保图像模式兼容
+    if pil_image.mode not in ('RGB', 'RGBA', 'L'):
+        pil_image = pil_image.convert('RGB')
+    
+    photo = ImageTk.PhotoImage(pil_image)
+    
+    # 保持引用防止垃圾回收
+    if not hasattr(pil_to_tkinter, '_photo_refs'):
+        pil_to_tkinter._photo_refs = []
+    pil_to_tkinter._photo_refs.append(photo)
+    
+    # 限制引用数量，避免内存泄漏
+    if len(pil_to_tkinter._photo_refs) > 100:
+        pil_to_tkinter._photo_refs = pil_to_tkinter._photo_refs[-50:]
+    
+    return photo
 
 
 def resize_for_display(image: Image.Image, max_size: Tuple[int, int], 
