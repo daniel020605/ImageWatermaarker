@@ -302,3 +302,92 @@ class WatermarkProcessor:
                 continue
         
         return results
+    
+    def _get_position_enum(self, position_str: str) -> WatermarkPosition:
+        """
+        将中文位置字符串转换为WatermarkPosition枚举
+        """
+        position_map = {
+            "左上": WatermarkPosition.TOP_LEFT,
+            "上中": WatermarkPosition.TOP_CENTER,
+            "右上": WatermarkPosition.TOP_RIGHT,
+            "左中": WatermarkPosition.MIDDLE_LEFT,
+            "中心": WatermarkPosition.MIDDLE_CENTER,
+            "右中": WatermarkPosition.MIDDLE_RIGHT,
+            "左下": WatermarkPosition.BOTTOM_LEFT,
+            "下中": WatermarkPosition.BOTTOM_CENTER,
+            "右下": WatermarkPosition.BOTTOM_RIGHT,
+            # 英文映射（向后兼容）
+            "top_left": WatermarkPosition.TOP_LEFT,
+            "top_center": WatermarkPosition.TOP_CENTER,
+            "top_right": WatermarkPosition.TOP_RIGHT,
+            "middle_left": WatermarkPosition.MIDDLE_LEFT,
+            "middle_center": WatermarkPosition.MIDDLE_CENTER,
+            "middle_right": WatermarkPosition.MIDDLE_RIGHT,
+            "bottom_left": WatermarkPosition.BOTTOM_LEFT,
+            "bottom_center": WatermarkPosition.BOTTOM_CENTER,
+            "bottom_right": WatermarkPosition.BOTTOM_RIGHT,
+        }
+        
+        return position_map.get(position_str, WatermarkPosition.MIDDLE_CENTER)
+    
+    def apply_text_watermark(self, base_image: Image.Image, config: dict) -> Image.Image:
+        """
+        应用文本水印的便捷方法
+        """
+        # 创建文本水印
+        watermark = self.create_text_watermark(
+            text=config.get('text', ''),
+            font_name=config.get('font_name'),
+            font_size=config.get('font_size', self.default_font_size),
+            color=config.get('color', self.default_font_color),
+            bold=config.get('bold', False),
+            italic=config.get('italic', False),
+            shadow=config.get('shadow', False),
+            stroke=config.get('stroke', False),
+            stroke_width=config.get('stroke_width', 2),
+            stroke_color=config.get('stroke_color')
+        )
+        
+        if watermark is None:
+            return base_image
+        
+        # 转换位置字符串为枚举
+        position = self._get_position_enum(config.get('position', '中心'))
+        
+        # 应用水印
+        return self.apply_watermark(
+            base_image=base_image,
+            watermark=watermark,
+            position=position,
+            custom_pos=config.get('custom_pos'),
+            margin=config.get('margin'),
+            rotation=config.get('rotation', 0)
+        )
+    
+    def apply_image_watermark(self, base_image: Image.Image, config: dict) -> Image.Image:
+        """
+        应用图片水印的便捷方法
+        """
+        # 创建图片水印
+        watermark = self.create_image_watermark(
+            watermark_path=config.get('image_path', ''),
+            scale_percent=config.get('scale_percent', 100.0),
+            opacity=config.get('opacity', 255)
+        )
+        
+        if watermark is None:
+            return base_image
+        
+        # 转换位置字符串为枚举
+        position = self._get_position_enum(config.get('position', '中心'))
+        
+        # 应用水印
+        return self.apply_watermark(
+            base_image=base_image,
+            watermark=watermark,
+            position=position,
+            custom_pos=config.get('custom_pos'),
+            margin=config.get('margin'),
+            rotation=config.get('rotation', 0)
+        )

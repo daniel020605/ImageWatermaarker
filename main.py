@@ -73,7 +73,7 @@ except ImportError:
 
 # 导入应用程序主窗口
 try:
-    from gui.main_window_image_watermark import MainWindow
+    from gui.main_window_robust import MainWindow
 except ImportError as e:
     print(f"错误: 无法导入主窗口模块: {e}")
     print("请确保所有模块文件都存在")
@@ -134,18 +134,19 @@ def main():
     try:
         # 创建并运行主窗口
         print("正在启动应用程序...")
-        app = MainWindow()
+        root = tk.Tk()
+        app = MainWindow(root)
         
         # 设置应用程序图标（如果存在）
         icon_path = project_root / "icon.ico"
         if icon_path.exists():
             try:
-                app.root.iconbitmap(str(icon_path))
+                root.iconbitmap(str(icon_path))
             except Exception:
                 pass  # 忽略图标加载错误
         
         print("应用程序已启动")
-        app.run()
+        root.mainloop()
         
     except KeyboardInterrupt:
         print("\n用户中断程序")

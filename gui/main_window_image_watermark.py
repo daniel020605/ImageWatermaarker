@@ -15,6 +15,7 @@ from core.watermark import WatermarkProcessor, WatermarkPosition
 from core.config_manager import ConfigManager
 from utils.file_utils import validate_output_directory
 from utils.image_utils import pil_to_tkinter, resize_for_display
+from utils.input_validation import InputValidator, register_numeric_validation
 
 
 class MainWindow:
