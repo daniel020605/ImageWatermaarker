@@ -27,7 +27,7 @@ class ConfigManager:
             'type': 'text',
             'text': current_date,
             'font_name': None,
-            'font_size': 36,
+            'font_size': 36,  # 这个会被自动计算覆盖
             'color': [0, 0, 0, 128],  # RGBA - 黑色半透明
             'bold': False,
             'italic': False,

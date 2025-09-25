@@ -502,9 +502,12 @@ class MainWindow:
         self.update_status(f"成功加载 {loaded_count} 张图片")
         self.update_progress(0)
         
-        # 如果有图片，选择第一张
+        # 如果有图片，选择第一张并自动设置字体大小
         if self.loaded_images:
             self.current_image_index = 0
+            # 根据第一张图片自动设置字体大小
+            auto_font_size = self.calculate_auto_font_size()
+            self.var_font_size.set(auto_font_size)
             self.update_preview()
     
     def update_image_list(self):
@@ -551,6 +554,9 @@ class MainWindow:
             item = selection[0]
             index = self.image_tree.index(item)
             self.current_image_index = index
+            # 根据新选择的图片自动调整字体大小
+            auto_font_size = self.calculate_auto_font_size()
+            self.var_font_size.set(auto_font_size)
             self.update_preview()
     
     def update_preview(self):
@@ -653,13 +659,14 @@ class MainWindow:
             if size < 8:
                 size = 8
                 self.var_font_size.set(size)
-            elif size > 200:
-                size = 200
+            elif size > 1000:  # 放宽上限到1000
+                size = 1000
                 self.var_font_size.set(size)
             self.update_preview()
         except ValueError:
-            # 如果输入无效，恢复到默认值
-            self.var_font_size.set(36)
+            # 如果输入无效，恢复到自动计算的默认值
+            default_size = self.calculate_auto_font_size()
+            self.var_font_size.set(default_size)
             self.update_preview()
     
     def decrease_font_size(self):
@@ -672,9 +679,25 @@ class MainWindow:
     def increase_font_size(self):
         """增大字体大小"""
         current_size = self.var_font_size.get()
-        new_size = min(200, current_size + 2)
+        new_size = min(1000, current_size + 2)  # 放宽上限到1000
         self.var_font_size.set(new_size)
         self.update_preview()
+    
+    def calculate_auto_font_size(self):
+        """根据图片尺寸自动计算字体大小"""
+        if not self.loaded_images or self.current_image_index >= len(self.loaded_images):
+            return 36  # 默认字体大小
+        
+        current_image = self.loaded_images[self.current_image_index]['image']
+        width, height = current_image.size
+        
+        # 根据图片的较小边来计算字体大小
+        min_dimension = min(width, height)
+        
+        # 字体大小约为图片较小边的1/20到1/15之间
+        font_size = max(8, min(1000, int(min_dimension / 18)))
+        
+        return font_size
     
     def on_opacity_changed(self, value):
         """透明度变化"""

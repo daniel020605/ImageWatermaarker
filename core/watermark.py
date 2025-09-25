@@ -4,6 +4,7 @@
 """
 
 import math
+import os
 from PIL import Image, ImageDraw, ImageFont
 from typing import Tuple, Optional, Union
 from enum import Enum
@@ -70,15 +71,36 @@ class WatermarkProcessor:
         if font_size is None:
             font_size = self.default_font_size
             
-        try:
-            if font_name:
-                # 尝试加载指定字体
+        # 直接尝试加载系统字体，不使用复杂的异常处理
+        font = None
+        
+        if font_name:
+            # 尝试加载指定字体
+            try:
                 font = ImageFont.truetype(font_name, font_size)
-            else:
-                # 使用默认字体
-                font = ImageFont.load_default()
-        except (OSError, IOError):
-            # 字体加载失败，使用默认字体
+            except Exception as e:
+                print(f"指定字体加载失败: {e}")
+        
+        if not font:
+            # 尝试系统字体路径
+            font_paths = [
+                "/System/Library/Fonts/Helvetica.ttc",  # macOS
+                "/System/Library/Fonts/Arial.ttf",      # macOS
+                "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",  # Linux
+                "C:/Windows/Fonts/arial.ttf"            # Windows
+            ]
+            
+            for font_path in font_paths:
+                if os.path.exists(font_path):
+                    try:
+                        font = ImageFont.truetype(font_path, font_size)
+                        break
+                    except Exception as e:
+                        print(f"系统字体加载失败 {font_path}: {e}")
+                        continue
+        
+        if not font:
+            print(f"所有字体加载失败，使用默认字体")
             font = ImageFont.load_default()
             
         return font
